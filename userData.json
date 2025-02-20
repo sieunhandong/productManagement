@@ -1,0 +1,24 @@
+[
+    {
+        "name": "Nguyen Van A",
+        "email": "nguyenvana@example.com",
+        "password": "hashedpassword123",
+        "isAdmin": false,
+        "phone": 1234567890,
+        "access_token": "token_example_123",
+        "refresh_token": "refresh_token_example_123",
+        "createdAt": "2024-02-15T10:00:00.000Z",
+        "updatedAt": "2024-02-15T10:00:00.000Z"
+    },
+    {
+        "name": "test",
+        "email": "test12@gmail.com",
+        "password": "123",
+        "isAdmin": true,
+        "phone": 9876543210,
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoiNjdiMGI2NDQxOWM2Yjk1YjdiNzhhODRkIiwiaXNBZG1pbiI6ZmFsc2V9LCJpYXQiOjE3Mzk2MzQ1MzUsImV4cCI6MTczOTYzODEzNX0.FMzvjznehMlM5rmz8p8hG2pt9JUSt5AcvPVqa86vMBo",
+        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoiNjdiMGI2NDQxOWM2Yjk1YjdiNzhhODRkIiwiaXNBZG1pbiI6ZmFsc2V9LCJpYXQiOjE3Mzk2MzQ1MzUsImV4cCI6MTc3MTE3MDUzNX0.tScGywLydyLRHtoOAqh8bdwDd-yQ1cFJo0IjSSZWRus",
+        "createdAt": "2024-02-15T10:05:00.000Z",
+        "updatedAt": "2024-02-15T10:05:00.000Z"
+    }
+]
