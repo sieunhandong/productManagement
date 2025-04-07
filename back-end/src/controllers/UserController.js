@@ -5,11 +5,10 @@ const User = require('../models/UserModel')
 
 const createUser = async (req, res) => {
     try {
-        // console.log(req.body)
         const { name, email, password, confirmPassword, phone } = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
-        if (!name || !email || !password || !confirmPassword || !phone) {
+        if (!email || !password || !confirmPassword) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is required'
@@ -25,7 +24,6 @@ const createUser = async (req, res) => {
                 message: 'The password is equal confirmPassword'
             })
         }
-        // console.log('isCheckEmail', isCheckEmail)
         const response = await UserService.createUser(req.body)
         return res.status(200).json(response)
     } catch (e) {
@@ -37,11 +35,11 @@ const createUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        // console.log(req.body)
-        const { name, email, password, confirmPassword, phone } = req.body
+        console.log(req.body)
+        const { email, password } = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
-        if (!name || !email || !password || !confirmPassword || !phone) {
+        if (!email || !password) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is required'
@@ -51,15 +49,17 @@ const loginUser = async (req, res) => {
                 status: 'ERR',
                 message: 'The input is email'
             })
-        } else if (password !== confirmPassword) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The password is equal confirmPassword'
-            })
         }
-        // console.log('isCheckEmail', isCheckEmail)
         const response = await UserService.loginUser(req.body)
-        return res.status(200).json(response)
+        const { refresh_token, ...newResponse } = response
+
+        res.cookie("refresh_token", refresh_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict"
+        })
+
+        return res.status(200).json(newResponse)
     } catch (e) {
         return res.status(404).json({
             message: e
@@ -77,7 +77,6 @@ const updateUser = async (req, res) => {
                 message: 'The userId is required'
             })
         }
-        console.log("userId", userId)
         const response = await UserService.updateUser(userId, data)
         return res.status(200).json(response)
     } catch (e) {
@@ -96,7 +95,6 @@ const deleteUser = async (req, res) => {
                 message: 'The userId is required'
             })
         }
-        console.log("userId", userId)
         const response = await UserService.deleteUser(userId)
         return res.status(200).json(response)
     } catch (e) {
@@ -121,7 +119,6 @@ const getAllUsers = async (req, res) => {
 const getDetailsUser = async (req, res) => {
     try {
         const userId = req.params.id
-        console.log("userId", userId)
         if (!userId) {
             return res.status(404).json({
                 status: 'ERR',
@@ -141,7 +138,7 @@ const getDetailsUser = async (req, res) => {
 
 const refreshToken = async (req, res) => {
     try {
-        const token = req.headers.token.split(' ')[1]
+        const token = req.cookies.refresh_token
         if (!token) {
             return res.status(404).json({
                 status: 'ERR',
@@ -157,6 +154,20 @@ const refreshToken = async (req, res) => {
         });
     }
 }
+const logoutUser = async (req, res) => {
+    try {
+        res.clearCookie('refresh_token')
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Lou out success'
+        });
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message
+        });
+    }
+}
 module.exports = {
     createUser,
     loginUser,
@@ -164,5 +175,6 @@ module.exports = {
     deleteUser,
     getAllUsers,
     getDetailsUser,
-    refreshToken
+    refreshToken,
+    logoutUser
 }

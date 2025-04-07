@@ -12,7 +12,7 @@ const createUser = (newUser) => {
             })
             if (checkUser !== null) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The email is already'
                 })
             }
@@ -39,14 +39,14 @@ const createUser = (newUser) => {
 
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, confirmPassword, phone } = userLogin
+        const { email, password } = userLogin
         try {
             const checkUser = await User.findOne({
                 email: email
             })
             if (checkUser === null) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The user is not defined'
                 })
             }
@@ -54,7 +54,7 @@ const loginUser = (userLogin) => {
 
             if (!comparePassword) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The password or user is incorrect',
                 })
             }
@@ -87,7 +87,7 @@ const updateUser = (id, data) => {
             const checkUser = await User.findOne({
                 _id: id
             })
-            console.log("User ID:", id);
+            // console.log("User ID:", id);
             // const allUsers = await User.find();
             // console.log("All Users:", allUsers);
 
@@ -99,7 +99,7 @@ const updateUser = (id, data) => {
                 })
             }
             const updateUser = await User.findByIdAndUpdate(id, data, { new: true })
-            console.log("UpdateUser", updateUser)
+            // console.log("UpdateUser", updateUser)
 
             resolve({
                 status: 'OK',
@@ -117,7 +117,6 @@ const deleteUser = (id) => {
             const checkUser = await User.findOne({
                 _id: id
             })
-            console.log("User ID:", id);
             if (checkUser === null) {
                 resolve({
                     status: 'OK',
@@ -155,7 +154,6 @@ const getDetailsUser = (id) => {
             const checkUser = await User.findOne({
                 _id: id
             })
-            console.log("checkUser", checkUser)
             if (checkUser === null) {
                 resolve({
                     status: 'OK',

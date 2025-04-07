@@ -1,43 +1,89 @@
-import React from 'react';
-import { Col } from 'antd';
-import { WrapperHeader, WrapperHeaderAccount, WrapperTextHeader, WrapperTextHeaderSmall } from './style';
+import React, { useState } from 'react';
+import { Badge, Button, Col, Popover } from 'antd';
+import { WrapperContentPopup, WrapperHeader, WrapperHeaderAccount, WrapperTextHeader, WrapperTextHeaderSmall } from './style';
 import Search from 'antd/es/transfer/search';
 import { CaretDownOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
 import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
-function HeaderComponent() {
-  return (
-    <WrapperHeader>
-      <Col span={6}>
-        <WrapperTextHeader>MiHoo</WrapperTextHeader>
-      </Col>
-      <Col span={12}>
-        <ButtonInputSearch
-          size='large'
-          textButton="Search"
-          placeholder="Input search text"
-        // onSearch={onSearch}
-        />
-      </Col>
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import * as UserService from '../../services/UserService'
+import { resetUser } from '../../redux/slides/userSlide'
+import Loading from '../LoadingComponent/Loading';
 
-      <Col span={6} style={{ display: "flex", gap: "20px", alignItems: 'center' }}>
-        <WrapperHeaderAccount>
+function HeaderComponent() {
+
+  const user = useSelector((state) => state.user)
+  const dispatch = useDispatch();
+  const [loading, setloading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavigateLogin = () => {
+    navigate('/sign-in')
+  }
+
+  const handleLogout = async () => {
+    setloading(true)
+    await UserService.logoutUser()
+    dispatch(resetUser())
+    setloading(false)
+
+  }
+
+  const content = (
+    <div>
+      <WrapperContentPopup onClick={handleLogout}>Dang xuat</WrapperContentPopup>
+      <WrapperContentPopup>Thong tin nguoi dung</WrapperContentPopup>
+    </div>
+  )
+
+  return (
+    <div style={{ width: '100%', background: 'rgb(26,148,255)', display: 'flex', justifyContent: 'center' }}>
+      <WrapperHeader>
+        <Col span={5}>
+          <WrapperTextHeader>MiHoo</WrapperTextHeader>
+        </Col>
+        <Col span={13} style={{ display: 'flex', justifyContent: 'center' }}>
+          <ButtonInputSearch
+            size="large"
+            textButton="Search"
+            placeholder="Input search text"
+          // onSearch={onSearch}
+          />
+        </Col>
+
+        <Col span={6} style={{ display: "flex", gap: "20px", alignItems: 'center' }}>
+          <Loading isLoading={loading}>
+            <WrapperHeaderAccount>
+              <div>
+                <UserOutlined style={{ fontSize: '30px' }} />
+              </div>
+              {user?.name ? (
+                <>
+                  <Popover content={content} trigger="click" >
+                    <div style={{ cursor: 'pointer' }}>{user.name}</div>
+                  </Popover>
+                </>
+              ) : (
+                <div onClick={handleNavigateLogin} style={{ cursor: 'pointer' }}>
+                  <WrapperTextHeaderSmall>Sign-in/Sign-up</WrapperTextHeaderSmall>
+                  <div>
+                    <WrapperTextHeaderSmall>Account</WrapperTextHeaderSmall>
+                    <CaretDownOutlined />
+                  </div>
+                </div>
+              )}
+
+            </WrapperHeaderAccount>
+          </Loading>
           <div>
-            <UserOutlined style={{ fontSize: '30px' }} />
+            <Badge count={4} size='small'>
+              <ShoppingCartOutlined style={{ fontSize: '30px', color: "#fff" }} />
+            </Badge>
+            <WrapperTextHeaderSmall>Gio Hang</WrapperTextHeaderSmall>
           </div>
-          <div>
-            <WrapperTextHeaderSmall>Sign-in/Sign-up</WrapperTextHeaderSmall>
-            <div>
-              <WrapperTextHeaderSmall>Account</WrapperTextHeaderSmall>
-              <CaretDownOutlined />
-            </div>
-          </div>
-        </WrapperHeaderAccount>
-        <div>
-          <ShoppingCartOutlined style={{ fontSize: '30px', color: "#fff" }} />
-          <WrapperTextHeaderSmall>Gio Hang</WrapperTextHeaderSmall>
-        </div>
-      </Col>
-    </WrapperHeader>
+        </Col>
+      </WrapperHeader>
+    </div>
   );
 }
 

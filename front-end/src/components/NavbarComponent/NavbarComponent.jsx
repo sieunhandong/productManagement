@@ -53,18 +53,7 @@ const NavbarComponent = () => {
             <WrapperContent>
                 {renderContent('text', ['Tu Lanh', 'TV', 'MAYGIAT'])}
             </WrapperContent>
-            <WrapperContent>
-                {renderContent('checkbox', [
-                    { value: 'a', lable: 'A' },
-                    { value: 'b', lable: 'B' }
-                ])}
-            </WrapperContent>
-            <WrapperContent>
-                {renderContent('star', [3, 4, 5])}
-            </WrapperContent>
-            <WrapperContent>
-                {renderContent('price', ['duoi 40', 'tren 5000'])}
-            </WrapperContent>
+
         </div>
     )
 }

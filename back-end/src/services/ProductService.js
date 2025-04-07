@@ -60,7 +60,6 @@ const deleteProduct = (id) => {
             const checkProduct = await Product.findOne({
                 _id: id
             })
-            console.log("User ID:", id);
             if (checkProduct === null) {
                 resolve({
                     status: 'OK',
@@ -78,11 +77,37 @@ const deleteProduct = (id) => {
     })
 }
 
-const getAllProduct = async (limit = 8, page = 0) => {
+const getAllProduct = async (limit, page, sort, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
             const totalProuct = await Product.countDocuments()
-            const users = await Product.find().limit(limit).skip(page * limit);
+            // console.log(filter)
+            if (filter) {
+                const label = filter[0];
+                const allObjectFilter = await Product.find({ [label]: { '$regex': filter[1] } }).limit(limit).skip(page * limit)
+                resolve({
+                    status: 'OK',
+                    message: 'Get all products successfully',
+                    data: allObjectFilter,
+                    total: totalProuct,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalProuct / limit)
+                });
+            }
+            if (sort) {
+                const objectSort = {}
+                objectSort[sort[1]] = sort[0]
+                const allProductSort = await Product.find().limit(limit).skip(page * limit).sort(objectSort)
+                resolve({
+                    status: 'OK',
+                    message: 'Get all products successfully',
+                    data: allProductSort,
+                    total: totalProuct,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalProuct / limit)
+                });
+            }
+            const users = await Product.find().limit(limit).skip(page * limit)
             resolve({
                 status: 'OK',
                 message: 'Get all products successfully',
