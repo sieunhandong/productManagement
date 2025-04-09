@@ -9,7 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import * as UserService from './services/UserService'
 import { useDispatch } from 'react-redux'
 import { updateUser } from './redux/slides/userSlide';
-
+import { store } from './redux/store'
 function App() {
   const dispatch = useDispatch();
 
@@ -33,7 +33,11 @@ function App() {
     }
     return { decoded, storageData };
   };
-
+  // Hàm cập nhật access_token vào Redux mà vẫn giữ thông tin cũ
+  const updateAccessTokenInRedux = (token) => {
+    const currentUser = store.getState().user;
+    dispatch(updateUser({ ...currentUser, access_token: token }));
+  };
   // Hàm refresh token khi hết hạn
   const handleRefreshToken = async () => {
     try {
@@ -41,6 +45,8 @@ function App() {
       console.log('res', res)
       if (res?.access_token) {
         localStorage.setItem('access_token', JSON.stringify(res.access_token));
+        // Cập nhật Redux luôn
+        updateAccessTokenInRedux(res.access_token);
         return res.access_token;
       }
     } catch (error) {

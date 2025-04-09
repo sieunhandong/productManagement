@@ -30,7 +30,6 @@ const SignInPage = () => {
         if (isSuccess) {
             navigate('/')
             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
-            console.log('data?.access_tokens', data?.access_tokena)
             if (data?.access_token) {
                 const decoded = jwtDecode(data?.access_token)
                 if (decoded?.id) {
