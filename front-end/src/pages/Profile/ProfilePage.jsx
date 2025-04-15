@@ -20,19 +20,17 @@ const ProfilePage = () => {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [avatar, setAvatar] = useState('');
-    const [isSigningIn, setIsSigningIn] = useState(false);
-
 
     const dispatch = useDispatch();
     const mutation = useMutatioHooks(
-        (data) => {
+        async (data) => {
             const { id, access_token, ...rests } = data
-            const res = UserService.updateUser(id, rests, access_token);
+            const res = await UserService.updateUser(id, rests, access_token);
             return { ...res.data, access_token };
         }
     )
 
-    const { data, isLoading, isSuccess, isError } = mutation
+    const { data, isPending, isSuccess, isError } = mutation
 
     useEffect(() => {
         setEmail(user?.email);
@@ -82,23 +80,29 @@ const ProfilePage = () => {
         setAvatar(preview);
     };
 
+    //tai anh len server
+    // const handleOnchangeAvatar = async ({ fileList }) => {
+    //     const file = fileList?.[0]?.originFileObj;
+
+    //     if (!file) return;
+
+    //     try {
+    //         const res = await UserService.uploadAvatar(file);
+    //         setAvatar(res.url); // URL ảnh từ server
+    //     } catch (err) {
+    //         message.error('Upload avatar failed!');
+    //     }
+    // };
+
     const handleUpdate = () => {
-        setIsSigningIn(true); // Chỉ bật isLoading khi bấm nút đăng nhập
 
-        mutation.mutate({ id: user?.id, email, name, phone, address, avatar, access_token: user?.access_token },
-            {
-                onSettled: () => {
-                    setIsSigningIn(false); // Khi xong thì tắt loading
-                },
-            }
+        mutation.mutate({ id: user?.id, email, name, phone, address, avatar, access_token: user?.access_token }
         )
-
-
     }
     return (
         <div style={{ width: '1270px', margin: '0 auto', height: '500px' }}>
             <WrapperHeader>Thong tin nguoi dung</WrapperHeader>
-            <Loading isLoading={isSigningIn}>
+            <Loading isLoading={isPending}>
                 <WrapperContentProfile>
                     <WrapperInput>
                         <WrapprerLabel htmlFor="name">Name</WrapprerLabel>

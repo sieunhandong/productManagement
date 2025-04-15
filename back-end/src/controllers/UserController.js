@@ -168,6 +168,19 @@ const logoutUser = async (req, res) => {
         });
     }
 }
+
+const uploadAvatar = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
+    // Giả sử bạn cập nhật ảnh vào DB ở đây
+    // await UserModel.findByIdAndUpdate(req.user.id, { avatar: imageUrl });
+
+    return res.status(200).json({ message: 'Upload successful', url: imageUrl });
+};
 module.exports = {
     createUser,
     loginUser,
@@ -176,5 +189,6 @@ module.exports = {
     getAllUsers,
     getDetailsUser,
     refreshToken,
-    logoutUser
+    logoutUser,
+    uploadAvatar
 }
