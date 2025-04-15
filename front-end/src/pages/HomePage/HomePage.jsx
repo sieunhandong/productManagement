@@ -7,8 +7,22 @@ import slide2 from '../../assets/images/slide2.png';
 import slide3 from '../../assets/images/slide3.png';
 import slide4 from '../../assets/images/emyeu.png';
 import CardComponent from '../../components/CardComponent/CardComponent';
+import { useQuery } from '@tanstack/react-query';
+import * as ProductService from '../../services/ProductService'
 function HomePage() {
   const arr = ['TV', 'Tu lanh', 'Lap top']
+  const fecthProductAll = async () => {
+    const res = await ProductService.getAllProduct()
+    return res
+  }
+  const { isLoading, data: products } = useQuery({
+    queryKey: ['products'],
+    queryFn: fecthProductAll,
+    retry: 3,
+    retryDelay: 1000
+  })
+
+  console.log('products', products)
   return (
     <>
       <div style={{ width: '1270px', margin: '0 auto' }}>
@@ -24,12 +38,23 @@ function HomePage() {
         <div id="container" style={{ height: '1000px', width: '1270px', margin: "0 auto" }}>
           <SliderComponent arrImages={[slide1, slide2, slide3, slide4]} />
           <WrapperProducts>
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
-            <CardComponent />
+            {products?.data?.map((product) => {
+              return (
+                <CardComponent
+                  key={product._id}
+                  countInStock={product.countInStock}
+                  description={product.description}
+                  image={product.image}
+                  name={product.name}
+                  price={product.price}
+                  rating={product.rating}
+                  type={product.type}
+                  selled={product.selled}
+                  discount={product.discount}
+                />
+
+              )
+            })}
           </WrapperProducts>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
             <WrapperButtonMore textButton="Xem them" type="outline" styleButton={{

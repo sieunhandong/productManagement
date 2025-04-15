@@ -10,7 +10,7 @@ import * as UserService from '../../services/UserService'
 import { resetUser } from '../../redux/slides/userSlide'
 import Loading from '../LoadingComponent/Loading';
 
-function HeaderComponent() {
+function HeaderComponent({ isHiddenSearch = false, isHiddenCart = false }) {
 
   const user = useSelector((state) => state.user)
   const dispatch = useDispatch();
@@ -40,25 +40,32 @@ function HeaderComponent() {
 
   const content = (
     <div>
-      <WrapperContentPopup onClick={handleLogout}>Dang xuat</WrapperContentPopup>
       <WrapperContentPopup onClick={() => navigate('/profile-user')}>Thong tin nguoi dung</WrapperContentPopup>
+      {user?.isAdmin && (
+        <WrapperContentPopup onClick={() => navigate('/system/admin')}>Quan ly he thong</WrapperContentPopup>
+      )}
+      <WrapperContentPopup onClick={handleLogout}>Dang xuat</WrapperContentPopup>
+
     </div>
   )
 
   return (
     <div style={{ width: '100%', background: 'rgb(26,148,255)', display: 'flex', justifyContent: 'center' }}>
-      <WrapperHeader>
+      <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenCart ? 'space-between' : 'unset' }}>
         <Col span={5}>
           <WrapperTextHeader>MiHoo</WrapperTextHeader>
         </Col>
-        <Col span={13} style={{ display: 'flex', justifyContent: 'center' }}>
-          <ButtonInputSearch
-            size="large"
-            textButton="Search"
-            placeholder="Input search text"
-          // onSearch={onSearch}
-          />
-        </Col>
+        {!isHiddenSearch && (
+          <Col span={13} style={{ display: 'flex', justifyContent: 'center' }}>
+            <ButtonInputSearch
+              size="large"
+              textButton="Search"
+              placeholder="Input search text"
+            // onSearch={onSearch}
+            />
+          </Col>
+        )}
+
 
         <Col span={6} style={{ display: "flex", gap: "20px", alignItems: 'center' }}>
           <Loading isLoading={loading}>
@@ -80,7 +87,7 @@ function HeaderComponent() {
               </div>
               {user?.access_token ? (
                 <>
-                  <Popover content={content} trigger="click" >
+                  <Popover content={content} trigger="click">
                     <div style={{ cursor: 'pointer' }}>{userName?.length ? userName : user?.email}</div>
                   </Popover>
                 </>
@@ -96,12 +103,15 @@ function HeaderComponent() {
 
             </WrapperHeaderAccount>
           </Loading>
-          <div>
-            <Badge count={4} size='small'>
-              <ShoppingCartOutlined style={{ fontSize: '30px', color: "#fff" }} />
-            </Badge>
-            <WrapperTextHeaderSmall>Gio Hang</WrapperTextHeaderSmall>
-          </div>
+          {!isHiddenCart && (
+            <div>
+              <Badge count={4} size='small'>
+                <ShoppingCartOutlined style={{ fontSize: '30px', color: "#fff" }} />
+              </Badge>
+              <WrapperTextHeaderSmall>Gio Hang</WrapperTextHeaderSmall>
+            </div>
+          )}
+
         </Col>
       </WrapperHeader>
     </div>

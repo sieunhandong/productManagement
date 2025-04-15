@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require('dotenv');
 const { default: mongoose } = require("mongoose");
 const routes = require('./routes');
+const path = require('path');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require('cors')
@@ -44,7 +45,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb' }));
 app.use(bodyParser.json())
 app.use(cookieParser())
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // serve ảnh
 routes(app);
 mongoose.connect(`${process.env.MONGO_DB}`)
     .then(() => {
