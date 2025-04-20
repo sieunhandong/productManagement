@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updateUser } from './redux/slides/userSlide';
 import { store } from './redux/store'
 import Loading from './components/LoadingComponent/Loading';
+import 'antd/dist/reset.css';
 function App() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
