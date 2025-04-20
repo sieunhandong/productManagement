@@ -86,6 +86,23 @@ const updateUser = async (req, res) => {
     }
 }
 
+const deleteMany = async (req, res) => {
+    try {
+        const ids = req.body.ids
+        if (!ids) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The ids is required'
+            })
+        }
+        const response = await UserService.deleteManyUser(ids)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(500).json({
+            message: e
+        })
+    }
+}
 const deleteUser = async (req, res) => {
     try {
         const userId = req.params.id
@@ -190,5 +207,6 @@ module.exports = {
     getDetailsUser,
     refreshToken,
     logoutUser,
-    uploadAvatar
+    uploadAvatar,
+    deleteMany
 }

@@ -102,6 +102,7 @@ const updateUser = (id, data) => {
             // console.log("UpdateUser", updateUser)
 
             resolve({
+                data: updateUser,
                 status: 'OK',
                 message: 'SUCCESS'
             })
@@ -123,10 +124,23 @@ const deleteUser = (id) => {
                     message: 'The user is not defined'
                 })
             }
-            // await User.findByIdAndDelete(id)
+            await User.findByIdAndDelete(id)
             resolve({
                 status: 'OK',
                 message: 'Delete User Success'
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+const deleteManyUser = (ids) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await User.deleteMany({ _id: ids })
+            resolve({
+                status: 'OK',
+                message: 'Delete Users Success'
             })
         } catch (e) {
             reject(e)
@@ -180,5 +194,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getAllUsers,
-    getDetailsUser
+    getDetailsUser,
+    deleteManyUser
 }
