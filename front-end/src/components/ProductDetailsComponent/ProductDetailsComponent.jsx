@@ -7,14 +7,16 @@ import ButtonComponent from '../ButtonComponent/ButtonComponent'
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '../LoadingComponent/Loading'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { addOrderProduct } from '../../redux/slides/orderSlide'
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1)
     const user = useSelector((state) => state.user)
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
     const onChange = (value) => {
         setNumProduct(Number(value))
     }
@@ -26,7 +28,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         }
 
     }
-
+    console.log("location", location)
     const handleChangeCount = (type) => {
         if (type === 'increase') {
             setNumProduct(numProduct + 1)
@@ -43,6 +45,27 @@ const ProductDetailsComponent = ({ idProduct }) => {
     const handleAddOrderProduct = () => {
         if (!user?.id) {
             navigate('/sign-in', { state: location?.pathname })
+        } else {
+            // {
+            //     name: { type: String, required: true },
+            //     amount: { type: String, required: true, unique: true },
+            //     image: { type: String, required: true },
+            //     price: { type: Boolean, default: false, required: true },
+            //     product: {
+            //         type: mongoose.Schema.Types.ObjectId,
+            //             ref: 'Product',
+            //                 required: true,
+            //             },
+            // },
+            dispatch(addOrderProduct({
+                orderItems: {
+                    name: productDetails?.name,
+                    amount: numProduct,
+                    image: productDetails?.image,
+                    price: productDetails?.price,
+                    product: productDetails?._id
+                }
+            }))
         }
     }
     return (

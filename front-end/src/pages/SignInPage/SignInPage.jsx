@@ -5,7 +5,7 @@ import ButtonComponent from '../../components/ButtonComponent/ButtonComponent'
 import { Image } from 'antd'
 import login from '../../assets/images/login.png'
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import * as UserService from '../../services/UserService'
 import { useMutatioHooks } from '../../hooks/useMutationHook'
 import Loading from '../../components/LoadingComponent/Loading'
@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux'
 import { updateUser } from '../../redux/slides/userSlide'
 const SignInPage = () => {
     const [isShowPassword, setIsShowPassword] = useState(false);
+    const location = useLocation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isSigningIn, setIsSigningIn] = useState(false);
@@ -24,11 +25,15 @@ const SignInPage = () => {
     const mutation = useMutatioHooks(
         data => UserService.loginUser(data)
     )
-    const { data, isLoading, isError, isSuccess } = mutation
+    const { data, isPending, isError, isSuccess } = mutation
 
     useEffect(() => {
         if (isSuccess) {
-            navigate('/')
+            if (location?.state) {
+                navigate(location?.state)
+            } else {
+                navigate('/')
+            }
             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
             if (data?.access_token) {
                 const decoded = jwtDecode(data?.access_token)
@@ -96,7 +101,7 @@ const SignInPage = () => {
                             value={password} onChange={handleOnchangePassword} />
                     </div>
                     {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
-                    <Loading isLoading={isSigningIn}>
+                    <Loading isLoading={isPending}>
 
                         <ButtonComponent
                             disabled={!email.length || !password.length}

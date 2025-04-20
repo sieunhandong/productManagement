@@ -19,6 +19,7 @@ function HeaderComponent({ isHiddenSearch = false, isHiddenCart = false }) {
   const [loading, setloading] = useState(false);
   const [userName, setUserName] = useState('')
   const [userAvatar, setUserAvatar] = useState('')
+  const order = useSelector((state) => state.order)
   const navigate = useNavigate();
 
   const handleNavigateLogin = () => {
@@ -110,7 +111,7 @@ function HeaderComponent({ isHiddenSearch = false, isHiddenCart = false }) {
           </Loading>
           {!isHiddenCart && (
             <div onClick={() => navigate('/order')} style={{ cursor: 'pointer' }}>
-              <Badge count={4} size='small'>
+              <Badge count={order?.orderItems?.length} size='small'>
                 <ShoppingCartOutlined style={{ fontSize: '30px', color: "#fff" }} />
               </Badge>
               <WrapperTextHeaderSmall>Giỏ hàng</WrapperTextHeaderSmall>
