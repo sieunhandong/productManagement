@@ -35,7 +35,8 @@ export const AdminProduct = () => {
         image: '',
         type: '',
         countInStock: '',
-        newType: ''
+        newType: '',
+        discount: '',
     })
     const [stateProductDetails, setStateProductDetails] = useState({
         name: '',
@@ -44,7 +45,8 @@ export const AdminProduct = () => {
         rating: '',
         image: '',
         type: '',
-        countInStock: ''
+        countInStock: '',
+        discount: '',
     })
 
     const [form] = useForm();
@@ -56,7 +58,8 @@ export const AdminProduct = () => {
                 rating,
                 image,
                 type,
-                countInStock: countInStock } = data
+                countInStock,
+                discount } = data
             const res = ProductService.createProduct(data);
             return res;
         }
@@ -116,7 +119,8 @@ export const AdminProduct = () => {
                 rating: res?.data?.rating,
                 image: res?.data?.image,
                 type: res?.data?.type,
-                countInStock: res?.data?.countInStock
+                countInStock: res?.data?.countInStock,
+                discount: res?.data?.discount
             })
         }
         setIsLoadingUpdate(false)
@@ -364,7 +368,8 @@ export const AdminProduct = () => {
             rating: stateProduct.rating,
             image: stateProduct.image,
             type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
-            countInStock: stateProduct.countInStock
+            countInStock: stateProduct.countInStock,
+            discount: stateProduct.discount
         }
         mutation.mutate(params, {
             onSettled: () => {
@@ -395,7 +400,8 @@ export const AdminProduct = () => {
             rating: '',
             image: '',
             type: '',
-            countInStock: ''
+            countInStock: '',
+            discount: '',
         })
         form.resetFields()
     }
@@ -408,7 +414,8 @@ export const AdminProduct = () => {
             rating: '',
             image: '',
             type: '',
-            countInStock: ''
+            countInStock: '',
+            discount: '',
         })
         form.resetFields()
     }
@@ -566,6 +573,14 @@ export const AdminProduct = () => {
 
                         </Form.Item>
                         <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[{ required: true, message: 'Please input your count discount!' }]}
+                        >
+                            <InputComponent value={stateProduct.discount} onChange={handleOnChange} name="discount" />
+
+                        </Form.Item>
+                        <Form.Item
                             label="Image"
                             name="image"
                             rules={[{ required: true, message: 'Please input your count image!' }]}
@@ -653,6 +668,14 @@ export const AdminProduct = () => {
                             rules={[{ required: true, message: 'Please input your count rating!' }]}
                         >
                             <InputComponent value={stateProductDetails.rating} onChange={handleOnChangeDetails} name="rating" />
+
+                        </Form.Item>
+                        <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[{ required: true, message: 'Please input your count discount!' }]}
+                        >
+                            <InputComponent value={stateProductDetails.discount} onChange={handleOnChangeDetails} name="discount" />
 
                         </Form.Item>
                         <Form.Item
