@@ -6,7 +6,7 @@ const success = (mes = 'Success') => {
 const error = (mes = 'Error') => {
     message.error(mes)
 }
-const warning = (mes = 'Waring') => {
+const warning = (mes = 'Warning') => {
     message.warning(mes)
 }
 
