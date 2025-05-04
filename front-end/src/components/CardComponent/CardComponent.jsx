@@ -15,14 +15,14 @@ const CardComponent = (props) => {
     return (
         <WrapperCardStyle
             hoverable
-            he
             styles={{
                 root: { width: '200px' },
                 head: { backgroundColor: '#f0f2f5', height: '200px' }, // Thay vì dùng headStyle
                 body: { padding: '10px' }
             }}
             cover={<img alt="example" src={image} />}
-            onClick={() => handleDetailsProduct(id)}
+            onClick={() => countInStock !== 0 && handleDetailsProduct(id)}
+            disabled={countInStock === 0}
         >
             <WrapperImageStyle src={logo} alt="logo" />
             <StyleNameProduct>{name}</StyleNameProduct>
