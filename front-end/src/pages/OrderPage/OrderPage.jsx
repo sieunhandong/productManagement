@@ -19,7 +19,7 @@ import * as UserService from '../../services/UserService'
 import Loading from '../../components/LoadingComponent/Loading';
 import * as message from '../../components/Message/Message'
 import { updateUser } from '../../redux/slides/userSlide';
-
+import { useNavigate } from 'react-router-dom';
 function OrderPage() {
   const order = useSelector((state) => state.order)
   const user = useSelector((state) => state.user)
@@ -33,12 +33,11 @@ function OrderPage() {
     address: '',
     city: '',
   })
-
+  const navigate = useNavigate();
 
   const [form] = useForm();
 
   const handleOnChangeCheckAll = (e) => {
-    // console.log("e.target.checked", e.target.checked)
     if (e.target.checked) {
       const newListChecked = []
       order?.orderItems?.forEach((item) => {
@@ -68,6 +67,12 @@ function OrderPage() {
       })
     }
   }, [isModalUpdateInfo])
+
+
+  const handleChangeAddress = () => {
+    setIsModalUpdateInfo(true)
+  }
+
   const handleDeleteOrder = (isProduct) => {
     dispatch(removeOrderProduct({ isProduct }))
   }
@@ -79,7 +84,7 @@ function OrderPage() {
       setListChecked([...listChecked, e.target.value])
     }
   }
-  console.log("listChecked", listChecked)
+  // console.log("listChecked", listChecked)
   const handleChangeCount = (type, isProduct) => {
     if (type === 'increase') {
       dispatch(increaseAmount({ isProduct }))
@@ -126,12 +131,14 @@ function OrderPage() {
   }
 
   const handleAddCard = () => {
-    console.log("user", user)
+    // console.log("user", user)
     if (!order?.orderItemSelectd?.length) {
       message.error('Vui lòng chọn sản phẩm')
       console.log('message', message.error)
     } else if (!user?.phone || !user?.address || !user?.name || !user?.city) {
       setIsModalUpdateInfo(true)
+    } else {
+      navigate('/payment')
     }
   }
 
@@ -247,6 +254,13 @@ function OrderPage() {
 
           <WrapperRight>
             <div style={{ width: '100%' }}>
+              <WrapperInfo>
+                <div>
+                  <span>Địa chỉ: </span>
+                  <span style={{ fontWeight: 'bold' }}>{`${user?.address} ${user?.city}`}</span>
+                  <span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleChangeAddress}>Thay đổi</span>
+                </div>
+              </WrapperInfo>
               <WrapperInfo>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span>Tạm tính</span>
