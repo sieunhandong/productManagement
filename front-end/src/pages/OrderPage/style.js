@@ -12,6 +12,19 @@ export const WrapperStyleHeader = styled.div`
         font-weight: 400;
     }
 `
+export const WrapperStyleHeaderDilivery = styled.div`
+    background: rgb(255,255,255);
+    padding: 9px 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    span {
+        color: rgb(36,36,36);
+        font-size: 13px;
+        font-weight: 400;
+    };
+    margin-bottom: 4px;
+`
 export const WrapperLeft = styled.div`
     width: 910px;
 `

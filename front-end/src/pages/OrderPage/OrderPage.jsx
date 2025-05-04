@@ -4,7 +4,8 @@ import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   WrapperLeft, WrapperStyleHeader, WrapperListOrder,
   WrapperItemOrder, WrapperCountOrder,
-  WrapperRight, WrapperInfo, WrapperTotal
+  WrapperRight, WrapperInfo, WrapperTotal,
+  WrapperStyleHeaderDilivery
 } from './style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,6 +21,7 @@ import Loading from '../../components/LoadingComponent/Loading';
 import * as message from '../../components/Message/Message'
 import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
+import StepComponent from '../../components/StepComponent/StepComponent';
 function OrderPage() {
   const order = useSelector((state) => state.order)
   const user = useSelector((state) => state.user)
@@ -111,9 +113,9 @@ function OrderPage() {
   }, [order])
 
   const diliveryPriceMemo = useMemo(() => {
-    if (priceMemo > 200000) {
+    if (priceMemo >= 200000 && priceMemo < 500000) {
       return 10000
-    } else if (priceMemo === 0) {
+    } else if (priceMemo >= 500000 || order?.orderItemSelectd?.length === 0) {
       return 0
     } else {
       return 20000
@@ -193,12 +195,31 @@ function OrderPage() {
     })
     console.log("e.target.value", e.target.name, e.target.value)
   }
+  const itemsDelivery = [
+    {
+      title: '20.000 VND',
+      description: 'Dưới 200.000 VND',
+    },
+    {
+      title: '10.000 VND',
+      description: 'Từ 200.000 VND đến dưới 500.000 VND',
+    },
+    {
+      title: '0 VND',
+      description: 'Trên 500.000 VND',
+    }
+  ]
   return (
     <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
       <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
         <h3>Giỏ hàng</h3>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <WrapperLeft>
+            <WrapperStyleHeaderDilivery>
+              <StepComponent items={itemsDelivery} current={diliveryPriceMemo === 10000
+                ? 2 : diliveryPriceMemo === 20000
+                  ? 1 : order?.orderItemSelectd?.length === 0 ? 0 : 3} />
+            </WrapperStyleHeaderDilivery>
             <WrapperStyleHeader>
               <span style={{ display: 'inline-flex', width: '390px' }}>
                 <Checkbox onChange={handleOnChangeCheckAll} checked={listChecked?.length === order?.orderItems?.length} />

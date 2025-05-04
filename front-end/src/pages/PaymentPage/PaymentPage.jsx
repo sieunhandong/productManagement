@@ -16,6 +16,8 @@ import * as OrderService from '../../services/OrderService'
 import Loading from '../../components/LoadingComponent/Loading';
 import * as message from '../../components/Message/Message'
 import { updateUser } from '../../redux/slides/userSlide';
+import { useNavigate } from 'react-router-dom';
+import { removeAllOrderProduct } from '../../redux/slides/orderSlide';
 
 function PaymentPage() {
   const order = useSelector((state) => state.order)
@@ -23,6 +25,7 @@ function PaymentPage() {
   const [payment, setPayment] = useState('later_money')
   const [delivery, setDelivery] = useState('fast')
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [isModalUpdateInfo, setIsModalUpdateInfo] = useState(false);
   const [stateUserDetails, setStateUserDetails] = useState({
     name: '',
@@ -148,7 +151,20 @@ function PaymentPage() {
   useEffect(() => {
     if (isSuccess && dataAdd?.status === 'OK') {
       console.log('dat hang thanh cong')
+      const arrayOrdered = []
+      order?.orderItemSelectd?.forEach(element => {
+        arrayOrdered.push(element.product)
+      })
+      dispatch(removeAllOrderProduct({ listChecked: arrayOrdered }))
       message.success('Đặt hàng thành công')
+      navigate('/order-success', {
+        state: {
+          delivery,
+          payment,
+          orders: order?.orderItemSelectd,
+          totalPriceMemo: totalPriceMemo
+        }
+      })
     } else if (isError) {
       message.error()
     }
