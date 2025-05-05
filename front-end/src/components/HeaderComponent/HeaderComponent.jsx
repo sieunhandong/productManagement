@@ -48,7 +48,7 @@ function HeaderComponent({ isHiddenSearch = false, isHiddenCart = false }) {
       {user?.isAdmin && (
         <WrapperContentPopup onClick={() => handleClickNavigate('admin')}>Quản lý hệ thống</WrapperContentPopup>
       )}
-      <WrapperContentPopup onClick={() => handleClickNavigate('my-order')}>Đơn hàng của tôi</WrapperContentPopup>
+      <WrapperContentPopup onClick={() => handleClickNavigate(`my-order`)}>Đơn hàng của tôi</WrapperContentPopup>
       <WrapperContentPopup onClick={() => handleClickNavigate()}>Đăng xuất</WrapperContentPopup>
 
     </div>
@@ -60,7 +60,12 @@ function HeaderComponent({ isHiddenSearch = false, isHiddenCart = false }) {
     } else if (type === 'admin') {
       navigate('/system/admin')
     } else if (type === 'my-order') {
-      navigate('/my-order')
+      navigate('/my-order', {
+        state: {
+          id: user?.id,
+          token: user?.access_token
+        }
+      })
     } else {
       handleLogout()
     }

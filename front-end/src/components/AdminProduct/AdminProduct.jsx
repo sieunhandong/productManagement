@@ -27,7 +27,7 @@ export const AdminProduct = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const user = useSelector((state) => state.user);
-    const [stateProduct, setStateProduct] = useState({
+    const initial = () => ({
         name: '',
         price: '',
         description: '',
@@ -38,16 +38,8 @@ export const AdminProduct = () => {
         newType: '',
         discount: '',
     })
-    const [stateProductDetails, setStateProductDetails] = useState({
-        name: '',
-        price: '',
-        description: '',
-        rating: '',
-        image: '',
-        type: '',
-        countInStock: '',
-        discount: '',
-    })
+    const [stateProduct, setStateProduct] = useState(initial())
+    const [stateProductDetails, setStateProductDetails] = useState(initial())
 
     const [form] = useForm();
     const mutation = useMutatioHooks(
@@ -64,14 +56,12 @@ export const AdminProduct = () => {
             return res;
         }
     )
-    console.log('rowSelected', rowSelected)
     const mutationUpdate = useMutatioHooks(
         (data) => {
             const {
                 id,
                 token,
                 ...rests } = data
-            console.log('token', token)
             const res = ProductService.updateProduct(
                 id,
                 token,
@@ -85,7 +75,6 @@ export const AdminProduct = () => {
             const {
                 id,
                 token } = data
-            console.log('token', token)
             const res = ProductService.deleteProduct(
                 id,
                 token
@@ -98,7 +87,6 @@ export const AdminProduct = () => {
             const {
                 token,
                 ...ids } = data
-            console.log('token', token)
             const res = ProductService.deleteManyProduct(
                 ids,
                 token);
@@ -126,9 +114,13 @@ export const AdminProduct = () => {
         setIsLoadingUpdate(false)
     }
     useEffect(() => {
-        form.setFieldsValue(stateProductDetails)
-    }, [form, stateProductDetails])
-    // console.log('stateProductDetails', stateProductDetails)
+        if (!isModalOpen) {
+            form.setFieldsValue(stateProductDetails)
+        } else {
+            form.setFieldsValue(initial())
+        }
+    }, [form, stateProductDetails, isModalOpen])
+
     useEffect(() => {
         if (rowSelected && isDrawerOpen) {
             setIsLoadingUpdate(true)

@@ -69,11 +69,35 @@ const createOrder = (newOrder) => {
         }
     })
 }
-const getOrderDetails = (id) => {
+const getAllOrderDetails = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const order = await Order.findOne({
+            const order = await Order.find({
                 user: id
+            })
+            if (order === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The Order is not defined'
+                })
+            }
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: order
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+
+}
+const getDetailsOrder = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const order = await Order.findById({
+                _id: id
             })
             if (order === null) {
                 resolve({
@@ -93,7 +117,32 @@ const getOrderDetails = (id) => {
     })
 
 }
+
+const cancelOrderDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const order = await Order.findByIdAndDelete({
+                _id: id
+            })
+            if (order === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The order is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS'
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createOrder,
-    getOrderDetails
+    getAllOrderDetails,
+    getDetailsOrder,
+    cancelOrderDetails
 }
