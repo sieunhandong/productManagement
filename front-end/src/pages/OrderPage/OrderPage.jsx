@@ -87,11 +87,15 @@ function OrderPage() {
     }
   }
   // console.log("listChecked", listChecked)
-  const handleChangeCount = (type, isProduct) => {
+  const handleChangeCount = (type, isProduct, limited) => {
     if (type === 'increase') {
-      dispatch(increaseAmount({ isProduct }))
+      if (!limited) {
+        dispatch(increaseAmount({ isProduct }))
+      }
     } else {
-      dispatch(decreaseAmount({ isProduct }))
+      if (!limited) {
+        dispatch(decreaseAmount({ isProduct }))
+      }
     }
   }
 
@@ -104,7 +108,8 @@ function OrderPage() {
 
   const priceDiscountMemo = useMemo(() => {
     const result = order?.orderItemSelectd?.reduce((total, cur) => {
-      return total + ((cur.discount * cur.amount))
+      const totalDiscount = cur.discount ? cur.discount : 0
+      return total + (priceMemo * (totalDiscount * cur.amount) / 100)
     }, 0)
     if (Number(result)) {
       return result
@@ -255,11 +260,11 @@ function OrderPage() {
                       </span>
 
                       <WrapperCountOrder>
-                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease', order?.product)}>
+                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease', order?.product, order?.amount === 1)}>
                           <MinusOutlined style={{ color: '#000', fontSize: '10px' }} />
                         </button>
-                        <WrapperInputNumber defaultValue={order?.amount} value={order?.amount} size="small" />
-                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', order?.product)}>
+                        <WrapperInputNumber defaultValue={order?.amount} value={order?.amount} size="small" min={1} max={order?.countInStock} />
+                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', order?.product, order?.amount === order?.countInStock)}>
                           <PlusOutlined style={{ color: '#000', fontSize: '10px' }} />
                         </button>
                       </WrapperCountOrder>
@@ -289,7 +294,7 @@ function OrderPage() {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span>Giảm giá</span>
-                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{`${priceDiscountMemo} %`}</span>
+                  <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{convertPrice(priceDiscountMemo)}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span>Phí giao hàng</span>

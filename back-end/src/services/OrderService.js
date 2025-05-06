@@ -118,21 +118,56 @@ const getDetailsOrder = (id) => {
 
 }
 
-const cancelOrderDetails = (id) => {
+const cancelOrderDetails = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const order = await Order.findByIdAndDelete({
-                _id: id
+            let order = []
+            const promises = data.map(async (order) => {
+                const productData = await Product.findOneAndUpdate(
+                    {
+                        _id: order.product,
+                        selled: { $gte: order.amount }
+                    },
+                    {
+                        $inc: {
+                            countInStock: +order.amount,
+                            selled: -order.amount
+                        }
+                    },
+                    {
+                        new: true
+                    }
+                )
+                if (productData) {
+                    order = await Order.findByIdAndDelete({
+                        _id: id
+                    })
+                    if (order === null) {
+                        resolve({
+                            status: 'ERR',
+                            message: 'The order is not defined'
+                        })
+                    }
+                } else {
+                    return {
+                        status: 'OK',
+                        message: 'ERR',
+                        id: order.product
+                    }
+                }
             })
-            if (order === null) {
+            const results = await Promise.all(promises)
+            const newData = results && results.filter((item) => item?.id)
+            if (newData.length) {
                 resolve({
-                    status: 'ERR',
-                    message: 'The order is not defined'
+                    status: 'OK',
+                    message: `San pham voi id ${newData.join(',')} khong ton tai`,
                 })
             }
             resolve({
                 status: 'OK',
-                message: 'SUCCESS'
+                message: 'SUCCESS',
+                data: order
             })
         } catch (e) {
             reject(e)

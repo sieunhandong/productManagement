@@ -80,7 +80,7 @@ function HeaderComponent({ isHiddenSearch = false, isHiddenCart = false }) {
     <div style={{ width: '100%', background: 'rgb(26,148,255)', display: 'flex', justifyContent: 'center' }}>
       <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenCart ? 'space-between' : 'unset' }}>
         <Col span={5}>
-          <WrapperTextHeader>MiHoo</WrapperTextHeader>
+          <WrapperTextHeader to={'/'}>MiHoo</WrapperTextHeader>
         </Col>
         {!isHiddenSearch && (
           <Col span={13} style={{ display: 'flex', justifyContent: 'center' }}>

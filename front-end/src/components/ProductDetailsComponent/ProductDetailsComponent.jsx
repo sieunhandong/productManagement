@@ -64,7 +64,9 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     amount: numProduct,
                     image: productDetails?.image,
                     price: productDetails?.price,
-                    product: productDetails?._id
+                    product: productDetails?._id,
+                    discount: productDetails?.discount,
+                    countInStock: productDetails?.countInStock
                 }
             }))
         }
