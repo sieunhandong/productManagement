@@ -13,11 +13,13 @@ import { useForm } from 'antd/es/form/Form';
 import { useMutatioHooks } from '../../hooks/useMutationHook';
 import * as UserService from '../../services/UserService'
 import * as OrderService from '../../services/OrderService'
+import * as PaymentService from '../../services/PaymentService'
 import Loading from '../../components/LoadingComponent/Loading';
 import * as message from '../../components/Message/Message'
 import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
 import { removeAllOrderProduct } from '../../redux/slides/orderSlide';
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 function PaymentPage() {
   const order = useSelector((state) => state.order)
@@ -26,6 +28,9 @@ function PaymentPage() {
   const [delivery, setDelivery] = useState('fast')
   const dispatch = useDispatch();
   const navigate = useNavigate()
+  const [sdkReady, setSdkReady] = useState(false);
+  const [clientId, setClientId] = useState(null);
+
   const [isModalUpdateInfo, setIsModalUpdateInfo] = useState(false);
   const [stateUserDetails, setStateUserDetails] = useState({
     name: '',
@@ -171,6 +176,36 @@ function PaymentPage() {
     }
   }, [isSuccess, isError])
 
+
+  const onSuccessPaypal = async (details, data) => {
+    try {
+      const res = await data.order.capture(); // <-- capture để thực hiện thanh toán
+      console.log('res', res);
+      console.log('details', details);
+      mutationAddOrder.mutate(
+        {
+          token: user?.access_token,
+          orderItems: order?.orderItemSelectd,
+          fullName: user?.name,
+          address: user?.address,
+          phone: user?.phone,
+          city: user?.city,
+          paymentMethod: payment,
+          itemsPrice: priceMemo,
+          shippingPrice: diliveryPriceMemo,
+          totalPrice: totalPriceMemo,
+          user: user?.id,
+          isPaid: true,
+          paidAt: details.update_time
+        }
+      )
+    } catch (error) {
+      console.error('❌ Error capturing payment:', error);
+      message.error("Thanh toán thất bại qua PayPal.");
+    }
+  };
+
+
   const handleUpdateInfoUser = () => {
     const { name, phone, address, city } = stateUserDetails
     if (name && phone && address && city) {
@@ -202,6 +237,29 @@ function PaymentPage() {
   const handlePayment = (e) => {
     setPayment(e.target.value)
   }
+
+  const addPaypalScript = async () => {
+    const { data } = await PaymentService.getConfig()
+    setClientId(data);
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = `https://www.paypal.com/sdk/js?client-id=${data}`
+    script.async = true
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      setSdkReady(true)
+    }
+    document.body.appendChild(script)
+  }
+
+  useEffect(() => {
+    if (!window.paypal) {
+      addPaypalScript()
+    } else {
+      setSdkReady(true)
+    }
+  }, [])
+
   return (
     <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
       <Loading isLoading={isPendingAddOrder}>
@@ -223,6 +281,7 @@ function PaymentPage() {
                   <Lable>Chọn phương thức thanh toán</Lable>
                   <WrapperRadio onChange={handlePayment} value={payment}>
                     <Radio value="later_money">Thanh toán tiền mặt khi giao hàng</Radio>
+                    <Radio value="paypal">Thanh toán bằng paypal</Radio>
                   </WrapperRadio>
                 </div>
               </WrapperInfo>
@@ -262,20 +321,43 @@ function PaymentPage() {
                   </span>
                 </WrapperTotal>
               </div>
+              {payment === 'paypal' && sdkReady && clientId ? (
+                <div style={{ width: '320px' }}>
+                  <PayPalScriptProvider options={{ "client-id": clientId }}>
+                    <PayPalButtons
+                      style={{ layout: "vertical" }}
+                      createOrder={(data, actions) => {
+                        return actions.order.create({
+                          purchase_units: [{
+                            amount: {
+                              value: (totalPriceMemo / 30000).toFixed(2).toString()
+                            },
+                          }],
+                        });
+                      }}
+                      onApprove={onSuccessPaypal}
+                      onError={() => {
+                        alert('Thanh toán thất bại.')
+                      }}
+                    />
+                  </PayPalScriptProvider>
+                </div>
+              ) : (
+                <ButtonComponent
+                  onClick={() => handleAddOrder()}
+                  size={40}
+                  styleButton={{
+                    background: 'rgb(255, 57, 69)',
+                    height: '48px',
+                    width: '320px',
+                    border: 'none',
+                    borderRadius: '4px'
+                  }}
+                  textButton="Đặt hàng"
+                  styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                />
+              )}
 
-              <ButtonComponent
-                onClick={() => handleAddOrder()}
-                size={40}
-                styleButton={{
-                  background: 'rgb(255, 57, 69)',
-                  height: '48px',
-                  width: '320px',
-                  border: 'none',
-                  borderRadius: '4px'
-                }}
-                textButton="Đặt hàng"
-                styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-              />
             </WrapperRight>
           </div>
         </div>

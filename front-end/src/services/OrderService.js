@@ -8,6 +8,7 @@ import { axiosJWT } from "./UserService"
 // }
 
 export const createOrder = async (access_token, data) => {
+    console.log('data', data)
     const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL_BACKEND}/order/create`
         , data,
         {
