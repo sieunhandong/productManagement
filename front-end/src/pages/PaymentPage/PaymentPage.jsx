@@ -108,7 +108,8 @@ function PaymentPage() {
           itemsPrice: priceMemo,
           shippingPrice: diliveryPriceMemo,
           totalPrice: totalPriceMemo,
-          user: user?.id
+          user: user?.id,
+          email: user?.email
         }
       )
     }
@@ -330,7 +331,7 @@ function PaymentPage() {
                         return actions.order.create({
                           purchase_units: [{
                             amount: {
-                              value: (totalPriceMemo / 30000).toFixed(2).toString()
+                              value: (totalPriceMemo).toFixed(2).toString()
                             },
                           }],
                         });

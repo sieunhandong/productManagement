@@ -264,7 +264,7 @@ function OrderPage() {
                           <MinusOutlined style={{ color: '#000', fontSize: '10px' }} />
                         </button>
                         <WrapperInputNumber defaultValue={order?.amount} value={order?.amount} size="small" min={1} max={order?.countInStock} />
-                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', order?.product, order?.amount === order?.countInStock)}>
+                        <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', order?.product, order?.amount === order?.countInStock, order?.amount === 1)}>
                           <PlusOutlined style={{ color: '#000', fontSize: '10px' }} />
                         </button>
                       </WrapperCountOrder>

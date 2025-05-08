@@ -1,5 +1,5 @@
 import { Col, Image, InputNumber, Rate, Row } from 'antd'
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import imageProductSmall from '../../assets/images/product1Small.png'
 import { WrapperAddressProduct, WrapperBtnQuanlityProduct, WrapperInputNumber, WrapperPriceProduct, WrapperPriceTextProduct, WrapperQuanlityProduct, WrapperStyleColImage, WrapperStyleImageSmall, WrapperStyleNameProduct, WrapperStyleTextSell } from './style'
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
@@ -9,12 +9,15 @@ import { useQuery } from '@tanstack/react-query'
 import Loading from '../LoadingComponent/Loading'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { addOrderProduct } from '../../redux/slides/orderSlide'
+import { addOrderProduct, resetOrder } from '../../redux/slides/orderSlide'
 import { convertPrice } from '../../utils'
+import * as message from '../../components/Message/Message'
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1)
     const user = useSelector((state) => state.user)
+    const order = useSelector((state) => state.order)
+    const [errorLimitOrder, setErrorLimitOrder] = useState(false)
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -29,12 +32,34 @@ const ProductDetailsComponent = ({ idProduct }) => {
         }
 
     }
-    console.log("location", location)
-    const handleChangeCount = (type) => {
-        if (type === 'increase') {
-            setNumProduct(numProduct + 1)
+
+    useEffect(() => {
+        const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
+        if ((orderRedux?.amount + numProduct) <= orderRedux?.countInStock || !orderRedux) {
+            setErrorLimitOrder(false)
         } else {
-            setNumProduct(numProduct - 1)
+            setErrorLimitOrder(true)
+        }
+    }, [numProduct])
+
+    useEffect(() => {
+        if (order?.isSuccessOrder) {
+            message.success('Đặt hàng thành công')
+            alert('Đặt hàng thành công')
+        }
+        return () => {
+            dispatch(resetOrder())
+        }
+    }, [order?.isSuccessOrder])
+    const handleChangeCount = (type, limited) => {
+        if (type === 'increase') {
+            if (!limited) {
+                setNumProduct(numProduct + 1)
+            }
+        } else {
+            if (!limited) {
+                setNumProduct(numProduct - 1)
+            }
         }
     }
     const { isLoading, data: productDetails } = useQuery({
@@ -58,17 +83,24 @@ const ProductDetailsComponent = ({ idProduct }) => {
             //                 required: true,
             //             },
             // },
-            dispatch(addOrderProduct({
-                orderItems: {
-                    name: productDetails?.name,
-                    amount: numProduct,
-                    image: productDetails?.image,
-                    price: productDetails?.price,
-                    product: productDetails?._id,
-                    discount: productDetails?.discount,
-                    countInStock: productDetails?.countInStock
-                }
-            }))
+            const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
+            console.log('order', order)
+            console.log('orderRedux', orderRedux)
+            if ((orderRedux?.amount + numProduct) <= orderRedux?.countInStock || !orderRedux) {
+                dispatch(addOrderProduct({
+                    orderItems: {
+                        name: productDetails?.name,
+                        amount: numProduct,
+                        image: productDetails?.image,
+                        price: productDetails?.price,
+                        product: productDetails?._id,
+                        discount: productDetails?.discount,
+                        countInStock: productDetails?.countInStock
+                    }
+                }))
+            } else {
+                setErrorLimitOrder(true)
+            }
         }
     }
     return (
@@ -120,11 +152,11 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
                         <div style={{ marginBottom: '10px' }}>Số lượng</div>
                         <WrapperQuanlityProduct>
-                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease')}>
+                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease', numProduct === 1)}>
                                 <MinusOutlined style={{ color: '#000', fontSize: '20px' }} />
                             </button>
-                            <WrapperInputNumber size='small' onChange={onChange} defaultValue={1} value={numProduct} />
-                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase')}>
+                            <WrapperInputNumber size='small' onChange={onChange} defaultValue={1} min={1} max={productDetails?.countInStock} value={numProduct} />
+                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', numProduct === productDetails?.countInStock)}>
                                 <PlusOutlined style={{ color: '#000', fontSize: '20px' }} />
 
                             </button>
@@ -132,19 +164,22 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <ButtonComponent
-                            size={40}
-                            styleButton={{
-                                background: 'rgb(255, 57, 69)',
-                                height: '48px',
-                                width: '220px',
-                                border: 'none',
-                                borderRadius: '4px'
-                            }}
-                            textButton={'Chọn mua'}
-                            onClick={handleAddOrderProduct}
-                            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-                        ></ButtonComponent>
+                        <div>
+                            <ButtonComponent
+                                size={40}
+                                styleButton={{
+                                    background: 'rgb(255, 57, 69)',
+                                    height: '48px',
+                                    width: '220px',
+                                    border: 'none',
+                                    borderRadius: '4px'
+                                }}
+                                textButton={'Chọn mua'}
+                                onClick={handleAddOrderProduct}
+                                styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                            ></ButtonComponent>
+                            {errorLimitOrder && <div style={{ color: 'red' }}>Sản phẩm đã hết hàng</div>}
+                        </div>
                         <ButtonComponent
                             size={40}
                             styleButton={{
@@ -154,7 +189,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 border: '1px solid rgb(13,92,182)',
                                 borderRadius: '4px'
                             }}
-                            textButton={'Mua tra sau'}
+                            textButton={'Mua trả sau'}
                             styleTextButton={{ color: 'rgb(13,92,182)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </div>

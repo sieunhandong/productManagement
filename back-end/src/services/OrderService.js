@@ -2,9 +2,10 @@
 const { OrderedBulkOperation } = require("mongodb")
 const Order = require("../models/OrderProduct")
 const Product = require("../models/ProductModel")
+const EmailService = require('./EmaiService')
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user, isPaid, paidAt } = newOrder
+        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user, isPaid, paidAt, email } = newOrder
         try {
             const promises = orderItems.map(async (order) => {
                 const productData = await Product.findOneAndUpdate(
@@ -40,6 +41,7 @@ const createOrder = (newOrder) => {
                         paidAt
                     })
                     if (createOrder) {
+                        await EmailService.sendEmailCreateOrder(email, orderItems)
                         return {
                             status: 'OK',
                             message: 'SUCCESS'
@@ -67,6 +69,7 @@ const createOrder = (newOrder) => {
                 message: 'SUCCESS',
             })
         } catch (e) {
+            console.log('err', e)
             reject(e)
         }
     })

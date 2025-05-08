@@ -15,6 +15,7 @@ const initialState = {
     paidAt: '',
     isDelivered: false,
     deliveredAt: '',
+    isSuccessOrder: false
 }
 
 export const orderSlice = createSlice({
@@ -25,10 +26,18 @@ export const orderSlice = createSlice({
             const orderItem = action?.payload?.orderItems
             const itemOrder = state?.orderItems?.find((item) => item?.product === orderItem?.product)
             if (itemOrder) {
-                itemOrder.amount += orderItem?.amount
+                if (itemOrder.amount <= itemOrder.countInStock) {
+                    itemOrder.amount += orderItem?.amount
+                    state.isSuccessOrder = true
+                    state.isErrorOrder = false
+                }
             } else {
                 state.orderItems.push(orderItem)
             }
+        },
+
+        resetOrder: (state) => {
+            state.isSuccessOrder = false
         },
         increaseAmount: (state, action) => {
             const { isProduct } = action?.payload
@@ -81,6 +90,7 @@ export const { addOrderProduct,
     decreaseAmount,
     removeOrderProduct,
     removeAllOrderProduct,
-    selectedOrder } = orderSlice.actions
+    selectedOrder,
+    resetOrder } = orderSlice.actions
 
 export default orderSlice.reducer
