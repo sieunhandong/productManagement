@@ -13,12 +13,14 @@ const sendEmailCreateOrder = async (email, orderItems) => {
         },
     });
 
-    let listItem = ''
+    let listItem = '';
+    const attachImage = []
     orderItems.forEach((order) => {
         listItem += `<div>
         <div>Bạn đã đặt sản phẩm <b>${order.name}</b> với số lượng: <b>${order.amount}</b> và giá là : <b>${order.price} VND</b></div>  
-        <div><img src="${order.image}" alt="sản phẩm"/></div>
+        <div>Bên dưới là hình ảnh của sản phẩm</div>
         </div>`
+        attachImage.push({ path: order.image })
     })
 
     // Wrap in an async IIFE so we can use await.
@@ -27,7 +29,8 @@ const sendEmailCreateOrder = async (email, orderItems) => {
         to: "nvdong0902@gmail.com",
         subject: "Bạn đã đặt hàng tại MIHOO E-COMMERCE",
         text: "Hello world?", // plain‑text body
-        html: `<div><b>Bạn đã đặt hàng thành công tại MIHOO E-COMMERCE</b></div> ${listItem}`, // HTML body
+        html: `<div><b>Bạn đã đặt hàng thành công tại MIHOO E-COMMERCE</b></div> ${listItem}`,
+        attachments: attachImage
     });
 }
 

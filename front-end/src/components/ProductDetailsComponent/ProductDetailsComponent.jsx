@@ -10,8 +10,10 @@ import Loading from '../LoadingComponent/Loading'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { addOrderProduct, resetOrder } from '../../redux/slides/orderSlide'
-import { convertPrice } from '../../utils'
+import { convertPrice, initFacebookSDK } from '../../utils'
 import * as message from '../../components/Message/Message'
+import LikeButtonComponent from '../LikeButtonComponent/LikeButtonComponent'
+import CommentComponent from '../CommentComponent/CommentComponent'
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1)
@@ -32,10 +34,13 @@ const ProductDetailsComponent = ({ idProduct }) => {
         }
 
     }
+    useEffect(() => {
+        initFacebookSDK()
+    }, [])
 
     useEffect(() => {
         const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
-        if ((orderRedux?.amount + numProduct) <= orderRedux?.countInStock || !orderRedux) {
+        if ((orderRedux?.amount + numProduct) <= orderRedux?.countInStock || (!orderRedux && productDetails?.countInStock > 0)) {
             setErrorLimitOrder(false)
         } else {
             setErrorLimitOrder(true)
@@ -84,9 +89,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             //             },
             // },
             const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
-            console.log('order', order)
-            console.log('orderRedux', orderRedux)
-            if ((orderRedux?.amount + numProduct) <= orderRedux?.countInStock || !orderRedux) {
+            if ((orderRedux?.amount + numProduct) <= orderRedux?.countInStock || (!orderRedux && productDetails?.countInStock > 0)) {
                 dispatch(addOrderProduct({
                     orderItems: {
                         name: productDetails?.name,
@@ -149,11 +152,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         <span className='address'>{user?.address}</span>-
                         <span className='change-address'>Đổi địa chỉ</span>
                     </WrapperAddressProduct>
+                    <LikeButtonComponent dataHref="https://developers.facebook.com/docs/plugins/" />
                     <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
                         <div style={{ marginBottom: '10px' }}>Số lượng</div>
                         <WrapperQuanlityProduct>
                             <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease', numProduct === 1)}>
-                                <MinusOutlined style={{ color: '#000', fontSize: '20px' }} />
+                                <MinusOutlined style={{ color: '#000S', fontSize: '20px' }} />
                             </button>
                             <WrapperInputNumber size='small' onChange={onChange} defaultValue={1} min={1} max={productDetails?.countInStock} value={numProduct} />
                             <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase', numProduct === productDetails?.countInStock)}>
@@ -194,6 +198,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         ></ButtonComponent>
                     </div>
                 </Col>
+                <CommentComponent dataHref="https://developers.facebook.com/docs/plugins/comments#configurator" dataWidth="1270" />
             </Row>
         </Loading>
     )
