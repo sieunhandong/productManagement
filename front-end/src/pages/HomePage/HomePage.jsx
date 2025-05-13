@@ -76,7 +76,7 @@ function HomePage() {
           </WrapperProducts>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
             <WrapperButtonMore
-              textButton={isPlaceholderData ? 'Load more' : "Xem thêm"} type="outline" styleButton={{
+              textbutton={isPlaceholderData ? 'Load more' : "Xem thêm"} type="outline" styleButton={{
                 border: '1px solid rgb(11,116,229)', color: `${products?.total === products?.data?.length ? '#ccc' : 'rgb(11,116,229)'}`,
                 width: '240px', height: '38px', borderRadius: '4px'
               }}

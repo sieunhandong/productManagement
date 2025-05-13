@@ -157,7 +157,6 @@ function PaymentPage() {
 
   useEffect(() => {
     if (isSuccess && dataAdd?.status === 'OK') {
-      console.log('dat hang thanh cong')
       const arrayOrdered = []
       order?.orderItemSelectd?.forEach(element => {
         arrayOrdered.push(element.product)
@@ -181,8 +180,6 @@ function PaymentPage() {
   const onSuccessPaypal = async (details, data) => {
     try {
       const res = await data.order.capture(); // <-- capture để thực hiện thanh toán
-      console.log('res', res);
-      console.log('details', details);
       mutationAddOrder.mutate(
         {
           token: user?.access_token,
@@ -197,7 +194,8 @@ function PaymentPage() {
           totalPrice: totalPriceMemo,
           user: user?.id,
           isPaid: true,
-          paidAt: details.update_time
+          paidAt: details.update_time,
+          email: user?.email
         }
       )
     } catch (error) {
@@ -331,7 +329,7 @@ function PaymentPage() {
                         return actions.order.create({
                           purchase_units: [{
                             amount: {
-                              value: (totalPriceMemo).toFixed(2).toString()
+                              value: Math.round(totalPriceMemo).toString()
                             },
                           }],
                         });
@@ -354,7 +352,7 @@ function PaymentPage() {
                     border: 'none',
                     borderRadius: '4px'
                   }}
-                  textButton="Đặt hàng"
+                  textbutton="Đặt hàng"
                   styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                 />
               )}

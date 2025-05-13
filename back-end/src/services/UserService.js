@@ -17,7 +17,6 @@ const createUser = (newUser) => {
                 })
             }
             const hash = bcrypt.hashSync(password, 10)
-            //console.log('hash', hash)
             const createUser = await User.create({
                 name,
                 email,
@@ -68,7 +67,6 @@ const loginUser = (userLogin) => {
                 isAdmin: checkUser.isAdmin
             })
 
-            // console.log('access_token', access_token)
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -87,11 +85,6 @@ const updateUser = (id, data) => {
             const checkUser = await User.findOne({
                 _id: id
             })
-            // console.log("User ID:", id);
-            // const allUsers = await User.find();
-            // console.log("All Users:", allUsers);
-
-            console.log('checkUser', checkUser)
             if (checkUser === null) {
                 resolve({
                     status: 'OK',
@@ -99,8 +92,6 @@ const updateUser = (id, data) => {
                 })
             }
             const updateUser = await User.findByIdAndUpdate(id, data, { new: true })
-            // console.log("UpdateUser", updateUser)
-
             resolve({
                 data: updateUser,
                 status: 'OK',

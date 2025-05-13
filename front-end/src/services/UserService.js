@@ -11,7 +11,6 @@ export const signUpUser = async (data) => {
     return res.data
 }
 export const getDetailsUser = async (id, access_token) => {
-    console.log('access_token', access_token)
     const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL_BACKEND}/user/get-details/${id}`,
         {
             headers: {
@@ -23,7 +22,6 @@ export const getDetailsUser = async (id, access_token) => {
     return res.data
 }
 export const deleteUser = async (id, access_token) => {
-    console.log('access_token', access_token)
     const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL_BACKEND}/user/delete-user/${id}`,
         {
             headers: {
@@ -61,8 +59,6 @@ export const logoutUser = async () => {
     return res.data;
 };
 export const updateUser = async (id, access_token, data) => {
-    console.log('access_token', access_token)
-    console.log('id', id)
     const res = await axiosJWT.put(`${process.env.REACT_APP_API_URL_BACKEND}/user/update-user/${id}`,
         data,
         {
@@ -85,7 +81,6 @@ export const uploadAvatar = async (file) => {
     return res.data; // { message, url }
 };
 export const deleteManyUser = async (data, access_token) => {
-    console.log('access_token', access_token)
     const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL_BACKEND}/user/delete-many`,
         data,
         {

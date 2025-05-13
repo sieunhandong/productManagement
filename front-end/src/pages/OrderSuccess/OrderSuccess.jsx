@@ -16,7 +16,6 @@ function OrderSuccess() {
   const order = useSelector((state) => state.order)
   const location = useLocation();
   const { state } = location
-  console.log('location', location)
 
 
   return (
@@ -45,7 +44,7 @@ function OrderSuccess() {
               <WrapperItemOrderInfo>
                 {state?.orders?.map((order) => {
                   return (
-                    <WrapperItemOrder>
+                    <WrapperItemOrder key={order?.name}>
                       <div style={{ width: '500px', display: 'flex', alignItems: 'center', gap: 4 }}>
                         <img src={order?.image} style={{ width: '77px', height: '79px', objectFit: 'cover' }} />
                         <div style={{

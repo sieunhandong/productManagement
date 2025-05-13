@@ -40,7 +40,6 @@ const TypeProductPage = () => {
     const onChange = (current, pageSize) => {
         setPanigate({ ...panigate, page: current - 1, limit: pageSize })
     }
-    console.log('loading', loading)
     return (
         <Loading isLoading={loading}>
             <div style={{ width: '100%', background: '#efefef', height: 'calc(100vh - 64px)' }}>

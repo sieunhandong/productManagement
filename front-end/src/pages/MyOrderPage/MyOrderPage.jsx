@@ -115,7 +115,7 @@ function MyOrderPage() {
                           border: '1px solid rgb(11,116,229)',
                           borderRadius: '4px'
                         }}
-                        textButton="Hủy đơn hàng"
+                        textbutton="Hủy đơn hàng"
                         styleTextButton={{ color: 'rgb(11,116,229)', fontSize: '14px' }}
                       />
                       <ButtonComponent
@@ -126,7 +126,7 @@ function MyOrderPage() {
                           border: '1px solid rgb(11,116,229)',
                           borderRadius: '4px'
                         }}
-                        textButton="Xem chi tiết"
+                        textbutton="Xem chi tiết"
                         styleTextButton={{ color: 'rgb(11,116,229)', fontSize: '14px' }}
                       />
                     </div>

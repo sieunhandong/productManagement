@@ -86,7 +86,7 @@ function OrderPage() {
       setListChecked([...listChecked, e.target.value])
     }
   }
-  // console.log("listChecked", listChecked)
+
   const handleChangeCount = (type, isProduct, limited) => {
     if (type === 'increase') {
       if (!limited) {
@@ -138,10 +138,8 @@ function OrderPage() {
   }
 
   const handleAddCard = () => {
-    // console.log("user", user)
     if (!order?.orderItemSelectd?.length) {
       message.error('Vui lòng chọn sản phẩm')
-      console.log('message', message.error)
     } else if (!user?.phone || !user?.address || !user?.name || !user?.city) {
       setIsModalUpdateInfo(true)
     } else {
@@ -198,7 +196,6 @@ function OrderPage() {
       ...stateUserDetails,
       [e.target.name]: e.target.value
     })
-    console.log("e.target.value", e.target.name, e.target.value)
   }
   const itemsDelivery = [
     {
@@ -241,7 +238,7 @@ function OrderPage() {
             <WrapperListOrder>
               {order?.orderItems?.map((order) => {
                 return (
-                  <WrapperItemOrder>
+                  <WrapperItemOrder key={order?.product}>
                     <div style={{ width: '390px', display: 'flex', alignItems: 'center', gap: 4 }}>
                       <Checkbox onChange={onChange} value={order?.product} checked={listChecked.includes(order?.product)} />
                       <img src={order?.image} style={{ width: '77px', height: '79px', objectFit: 'cover' }} />
@@ -323,7 +320,7 @@ function OrderPage() {
                 border: 'none',
                 borderRadius: '4px'
               }}
-              textButton="Mua hàng"
+              textbutton="Mua hàng"
               styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
             />
           </WrapperRight>

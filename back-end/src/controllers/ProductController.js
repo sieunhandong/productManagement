@@ -9,7 +9,6 @@ const createProduct = async (req, res) => {
                 message: 'The input is required'
             })
         }
-        // console.log('isCheckEmail', isCheckEmail)
         const response = await ProductService.createProduct(req.body)
         return res.status(200).json(response)
     } catch (e) {
@@ -30,7 +29,6 @@ const updateProduct = async (req, res) => {
                 message: 'The productId is required'
             })
         }
-        console.log("productId", productId)
         const response = await ProductService.updateProduct(productId, data)
         return res.status(200).json(response)
     } catch (e) {
@@ -76,7 +74,6 @@ const deleteManyProduct = async (req, res) => {
 const getDetailsProduct = async (req, res) => {
     try {
         const productId = req.params.id
-        console.log("userId", productId)
         if (!productId) {
             return res.status(404).json({
                 status: 'ERR',
