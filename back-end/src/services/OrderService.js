@@ -24,28 +24,9 @@ const createOrder = (newOrder) => {
                     }
                 )
                 if (productData) {
-                    const createOrder = await Order.create({
-                        orderItems,
-                        shippingAddress: {
-                            fullName,
-                            address,
-                            city,
-                            phone
-                        },
-                        paymentMethod,
-                        itemsPrice,
-                        shippingPrice,
-                        totalPrice,
-                        user: user,
-                        isPaid,
-                        paidAt
-                    })
-                    if (createOrder) {
-                        await EmailService.sendEmailCreateOrder(email, orderItems)
-                        return {
-                            status: 'OK',
-                            message: 'SUCCESS'
-                        }
+                    return {
+                        status: 'OK',
+                        message: 'SUCCESS'
                     }
                 } else {
                     return {
@@ -58,18 +39,41 @@ const createOrder = (newOrder) => {
             const results = await Promise.all(promises)
             const newData = results && results.filter((item) => item?.id)
             if (newData.length) {
+                const arrId = []
+                newData.forEach((item) => {
+                    arrId.push(item.id)
+                })
                 resolve({
                     status: 'OK',
-                    message: `San pham voi id ${newData.join(',')} khong du hang`,
+                    message: `San pham voi id ${arrId.join(',')} khong du hang`,
                     data: newData
                 })
+            } else {
+                const createOrder = await Order.create({
+                    orderItems,
+                    shippingAddress: {
+                        fullName,
+                        address,
+                        city,
+                        phone
+                    },
+                    paymentMethod,
+                    itemsPrice,
+                    shippingPrice,
+                    totalPrice,
+                    user: user,
+                    isPaid,
+                    paidAt
+                })
+                if (createOrder) {
+                    await EmailService.sendEmailCreateOrder(email, orderItems)
+                    resolve({
+                        status: 'OK',
+                        message: 'SUCCESS',
+                    })
+                }
             }
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-            })
         } catch (e) {
-            console.log('err', e)
             reject(e)
         }
     })
@@ -179,10 +183,24 @@ const cancelOrderDetails = (id, data) => {
         }
     })
 }
-
+const getAllOrder = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allOrder = await Order.find(); // Không trả về mật khẩu
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allOrder
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
 module.exports = {
     createOrder,
     getAllOrderDetails,
     getDetailsOrder,
-    cancelOrderDetails
+    cancelOrderDetails,
+    getAllOrder
 }

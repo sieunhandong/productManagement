@@ -1,5 +1,5 @@
 import { Col, Image, InputNumber, Rate, Row } from 'antd'
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useEffect, useMemo, useState } from 'react'
 import imageProductSmall from '../../assets/images/product1Small.png'
 import { WrapperAddressProduct, WrapperBtnQuanlityProduct, WrapperInputNumber, WrapperPriceProduct, WrapperPriceTextProduct, WrapperQuanlityProduct, WrapperStyleColImage, WrapperStyleImageSmall, WrapperStyleNameProduct, WrapperStyleTextSell } from './style'
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
@@ -42,7 +42,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
         if ((orderRedux?.amount + numProduct) <= orderRedux?.countInStock || (!orderRedux && productDetails?.countInStock > 0)) {
             setErrorLimitOrder(false)
-        } else {
+        } else if (productDetails?.countInStock === 0) {
             setErrorLimitOrder(true)
         }
     }, [numProduct])
@@ -147,12 +147,18 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     <WrapperPriceProduct>
                         <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
                     </WrapperPriceProduct>
+
                     <WrapperAddressProduct>
                         <span>Giao đến </span>
                         <span className='address'>{user?.address}</span>-
                         <span className='change-address'>Đổi địa chỉ</span>
                     </WrapperAddressProduct>
-                    <LikeButtonComponent dataHref="https://developers.facebook.com/docs/plugins/" />
+
+                    <LikeButtonComponent
+                        dataHref={process.env.REACT_APP_IS_LOCAL
+                            ? "https://developers.facebook.com/docs/plugins/"
+                            : window.location.href} />
+
                     <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
                         <div style={{ marginBottom: '10px' }}>Số lượng</div>
                         <WrapperQuanlityProduct>
@@ -178,7 +184,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                     border: 'none',
                                     borderRadius: '4px'
                                 }}
-                                textButton={'Chọn mua'}
+                                textbutton={'Chọn mua'}
                                 onClick={handleAddOrderProduct}
                                 styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                             ></ButtonComponent>
@@ -193,12 +199,16 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 border: '1px solid rgb(13,92,182)',
                                 borderRadius: '4px'
                             }}
-                            textButton={'Mua trả sau'}
+                            textbutton={'Mua trả sau'}
                             styleTextButton={{ color: 'rgb(13,92,182)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </div>
                 </Col>
-                <CommentComponent dataHref="https://developers.facebook.com/docs/plugins/comments#configurator" dataWidth="1270" />
+                <CommentComponent
+                    dataHref={process.env.REACT_APP_IS_LOCAL
+                        ? "https://developers.facebook.com/docs/plugins/comments#configurator"
+                        : window.location.href}
+                    dataWidth="1270" />
             </Row>
         </Loading>
     )

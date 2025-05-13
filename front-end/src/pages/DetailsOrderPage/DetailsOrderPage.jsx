@@ -13,7 +13,6 @@ const DetailsOrderPage = () => {
     const location = useLocation();
     const { state } = location
     const { id } = params
-    console.log('location', location)
     const fetchDetailsOrder = async () => {
         const res = await OrderService.getDetailsOrder(id, state?.token)
         return res?.data
@@ -31,7 +30,6 @@ const DetailsOrderPage = () => {
         }, 0)
         return result
     }, [data])
-    console.log('data', data)
     return (
         <Loading isLoading={isLoading}>
             <div style={{ width: '100%', heght: '100vh', background: '#f5f5f5' }}>

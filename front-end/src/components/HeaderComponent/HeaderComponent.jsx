@@ -86,7 +86,7 @@ function HeaderComponent({ isHiddenSearch = false, isHiddenCart = false }) {
           <Col span={13} style={{ display: 'flex', justifyContent: 'center' }}>
             <ButtonInputSearch
               size="large"
-              textButton="Search"
+              textbutton="Search"
               placeholder="Input search text"
               onChange={onSearch}
             />

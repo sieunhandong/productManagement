@@ -37,7 +37,6 @@ export const AdminUser = () => {
     })
 
     const [form] = useForm();
-    console.log('rowSelected', rowSelected)
     const mutationUpdate = useMutatioHooks(
         (data) => {
             const {
@@ -69,7 +68,6 @@ export const AdminUser = () => {
             const {
                 token,
                 ...ids } = data
-            console.log('token', token)
             const res = UserService.deleteManyUser(
                 ids,
                 token);
@@ -313,7 +311,6 @@ export const AdminUser = () => {
             ...stateUserDetails,
             [e.target.name]: e.target.value
         })
-        console.log("e.target.value", e.target.name, e.target.value)
     }
     const handleOnchangeAvatarDetails = async ({ fileList }) => {
         const file = fileList?.[0];

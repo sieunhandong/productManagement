@@ -416,14 +416,13 @@ export const AdminProduct = () => {
             ...stateProduct,
             [e.target.name]: e.target.value
         })
-        console.log("e.target.value", e.target.name, e.target.value)
     }
     const handleOnChangeDetails = (e) => {
         setStateProductDetails({
             ...stateProductDetails,
             [e.target.name]: e.target.value
         })
-        console.log("e.target.value", e.target.name, e.target.value)
+        // console.log("e.target.value", e.target.name, e.target.value)
     }
     const handleOnchangeAvatar = async ({ fileList }) => {
         const file = fileList?.[0];

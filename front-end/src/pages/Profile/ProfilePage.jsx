@@ -52,7 +52,6 @@ const ProfilePage = () => {
     const handleGetDetailsUser = async (id, token) => {
         const res = await UserService.getDetailsUser(id, token)
         dispatch(updateUser({ ...res?.data, access_token: token }))
-        console.log('res', res)
     }
     const handleOnchangeEmail = (value) => {
         setEmail(value)
@@ -116,7 +115,7 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '4px 6px',
                             }}
-                            textButton={'Cap nhat'}
+                            textbutton={'Cap nhat'}
                             styleTextButton={{ color: 'rgb(26,148,255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
@@ -132,7 +131,7 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '4px 6px',
                             }}
-                            textButton={'Cap nhat'}
+                            textbutton={'Cap nhat'}
                             styleTextButton={{ color: 'rgb(26,148,255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
@@ -148,7 +147,7 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '4px 6px',
                             }}
-                            textButton={'Cap nhat'}
+                            textbutton={'Cap nhat'}
                             styleTextButton={{ color: 'rgb(26,148,255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
@@ -164,7 +163,7 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '4px 6px',
                             }}
-                            textButton={'Cap nhat'}
+                            textbutton={'Cap nhat'}
                             styleTextButton={{ color: 'rgb(26,148,255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
@@ -196,7 +195,7 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '4px 6px',
                             }}
-                            textButton={'Cap nhat'}
+                            textbutton={'Cap nhat'}
                             styleTextButton={{ color: 'rgb(26,148,255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>

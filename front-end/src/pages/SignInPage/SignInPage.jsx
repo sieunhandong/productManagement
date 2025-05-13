@@ -48,7 +48,6 @@ const SignInPage = () => {
     const handleGetDetailsUser = async (id, token) => {
         const res = await UserService.getDetailsUser(id, token)
         dispatch(updateUser({ ...res?.data, access_token: token }))
-        console.log('res', res)
     }
     const handleOnchangeEmail = (value) => {
         setEmail(value)
@@ -69,7 +68,6 @@ const SignInPage = () => {
                 },
             }
         );
-        console.log('sign-in', email, password);
     };
 
     return (
@@ -115,7 +113,7 @@ const SignInPage = () => {
                                 borderRadius: '4px',
                                 margin: '26px 0 10px'
                             }}
-                            textButton={'Dang nhap'}
+                            textbutton={'Dang nhap'}
                             styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </Loading>

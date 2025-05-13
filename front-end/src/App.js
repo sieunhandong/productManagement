@@ -19,8 +19,6 @@ function App() {
   useEffect(() => {
     setIsLoading(true)
     const { storageData, decoded } = handleDecoded()
-    console.log('decoded', decoded)
-    console.log('storageData', storageData)
     if (decoded?.id) {
       handleGetDetailsUser(decoded.id, storageData)
     }
@@ -47,7 +45,6 @@ function App() {
   const handleRefreshToken = async () => {
     try {
       const res = await UserService.refreshToken();
-      // console.log('res', res)
       if (res?.access_token) {
         localStorage.setItem('access_token', JSON.stringify(res.access_token));
         // Cập nhật Redux luôn
@@ -82,7 +79,6 @@ function App() {
   const handleGetDetailsUser = async (id, token) => {
     try {
       const res = await UserService.getDetailsUser(id, token);
-      // console.log('User info:', res?.data);
       if (res?.data) {
         dispatch(updateUser({ ...res.data, access_token: token }));
         setIsLoading(false);
@@ -119,10 +115,9 @@ function App() {
   // const handleGetDetailsUser = async (id, token) => {
   //   const res = await UserService.getDetailsUser(id, token)
   //   dispatch(updateUser({ ...res?.data, access_token: token }))
-  //   console.log('res', res)
   // }
   return (
-    <div>
+    <div style={{ height: '100vh', width: '100%' }}>
       <Loading isLoading={isLoading} style={{ backgroundColor: '#ccc' }}>
         <Router>
           <Routes>

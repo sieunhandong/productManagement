@@ -8,7 +8,6 @@ import { axiosJWT } from "./UserService"
 // }
 
 export const createOrder = async (access_token, data) => {
-    console.log('data', data)
     const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL_BACKEND}/order/create`
         , data,
         {
@@ -47,6 +46,17 @@ export const getDetailsOrder = async (id, access_token) => {
 export const cancelOrder = async (id, access_token, orderItems) => {
     const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL_BACKEND}/order/cancel-order/${id}`
         , { data: orderItems },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${access_token}`,
+            },
+        }
+    )
+    return res.data
+}
+export const getAllOrder = async (access_token) => {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL_BACKEND}/order/get-all-order`,
         {
             headers: {
                 "Content-Type": "application/json",
